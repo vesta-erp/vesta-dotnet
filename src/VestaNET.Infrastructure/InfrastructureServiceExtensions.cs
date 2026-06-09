@@ -27,7 +27,7 @@ public static class InfrastructureServiceExtensions
         if (useJavaApi)
         {
             services.Configure<JavaApiSettings>(config.GetSection("JavaApi"));
-            services.AddTransient<JavaAuthHandler>();
+            services.AddSingleton<JavaAuthHandler>();
             services.AddHttpClient<IJavaApiClient, JavaApiClient>(client =>
             {
                 var baseUrl = config["JavaApi:BaseUrl"] ?? "http://localhost:8080";
@@ -38,8 +38,9 @@ public static class InfrastructureServiceExtensions
         }
         else
         {
-            services.AddScoped<IAbrigoRepository, DevAbrigoStub>();
-            services.AddScoped<IJavaApiClient, DevAbrigoStub>();
+            services.AddScoped<DevAbrigoStub>();
+            services.AddScoped<IAbrigoRepository>(sp => sp.GetRequiredService<DevAbrigoStub>());
+            services.AddScoped<IJavaApiClient>(sp => sp.GetRequiredService<DevAbrigoStub>());
         }
 
         services.AddScoped<IAnaliseRepository, AnaliseRepository>();
