@@ -13,7 +13,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o =>
+        o.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
 
 var jwt = builder.Configuration.GetSection(JwtSettings.Section).Get<JwtSettings>()
     ?? throw new InvalidOperationException("Seção 'Jwt' não configurada.");
