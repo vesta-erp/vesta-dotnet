@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using VestaNET.Application.Interfaces;
+using VestaNET.Application.Settings;
+using VestaNET.Infrastructure.HttpClients;
 using VestaNET.Infrastructure.Persistence;
 using VestaNET.Infrastructure.Persistence.Repositories;
 using VestaNET.Infrastructure.Security;
@@ -21,7 +23,25 @@ public static class InfrastructureServiceExtensions
             services.AddDbContext<AppDbContext>(o => o.UseOracle(cs));
         }
 
-        services.AddScoped<IAbrigoRepository, AbrigoRepository>();
+        var useJavaApi = config.GetValue<bool>("UseJavaApi");
+        if (useJavaApi)
+        {
+            services.Configure<JavaApiSettings>(config.GetSection("JavaApi"));
+            services.AddTransient<JavaAuthHandler>();
+            services.AddHttpClient<IJavaApiClient, JavaApiClient>(client =>
+            {
+                var baseUrl = config["JavaApi:BaseUrl"] ?? "http://localhost:8080";
+                client.BaseAddress = new Uri(baseUrl);
+            }).AddHttpMessageHandler<JavaAuthHandler>();
+
+            services.AddScoped<IAbrigoRepository>(sp => sp.GetRequiredService<IJavaApiClient>());
+        }
+        else
+        {
+            services.AddScoped<IAbrigoRepository, DevAbrigoStub>();
+            services.AddScoped<IJavaApiClient, DevAbrigoStub>();
+        }
+
         services.AddScoped<IAnaliseRepository, AnaliseRepository>();
         services.Configure<JwtSettings>(config.GetSection(JwtSettings.Section));
         services.AddScoped<JwtTokenGenerator>();
