@@ -76,6 +76,7 @@ internal static class JavaApiMapper
         Estoques = estoques.Select(e => new EstoqueAbrigo
         {
             Id = e.IdEstoque,
+            AbrigoId = a.IdAbrigo,
             RecursoId = e.IdRecurso,
             QuantidadeAtual = e.QtAtual,
             QuantidadeMinima = e.QtMinima,
@@ -84,6 +85,7 @@ internal static class JavaApiMapper
         Ocorrencias = ocorrencias.Select(o => new Ocorrencia
         {
             Id = o.IdOcorrencia,
+            AbrigoId = a.IdAbrigo,
             Titulo = o.NmTitulo,
             Severidade = o.TpSeveridade,
             Status = o.StStatus
@@ -91,6 +93,7 @@ internal static class JavaApiMapper
         Solicitacoes = solicitacoes.Select(s => new SolicitacaoRecurso
         {
             Id = s.IdSolicitacao,
+            AbrigoId = a.IdAbrigo,
             Status = s.StStatus
         }).ToList()
     };

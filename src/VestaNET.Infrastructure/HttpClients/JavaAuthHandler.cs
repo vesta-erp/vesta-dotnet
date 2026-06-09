@@ -1,3 +1,5 @@
+using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using Microsoft.Extensions.Options;
 using VestaNET.Application.Settings;
@@ -10,6 +12,7 @@ internal record JavaLoginResponse(string Token, string Tipo);
 internal class JavaAuthHandler : DelegatingHandler
 {
     private readonly JavaApiSettings _settings;
+    private readonly SemaphoreSlim _lock = new(1, 1);
     private string? _token;
 
     public JavaAuthHandler(IOptions<JavaApiSettings> options)
@@ -21,23 +24,33 @@ internal class JavaAuthHandler : DelegatingHandler
         HttpRequestMessage request, CancellationToken ct)
     {
         if (string.IsNullOrEmpty(_token))
-            _token = await ObterTokenAsync(ct);
+            await RefreshTokenAsync(ct);
 
         request.Headers.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+            new AuthenticationHeaderValue("Bearer", _token);
 
         var response = await base.SendAsync(request, ct);
 
-        // Token expirado: obtém novo token e tenta uma vez
-        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-        {
-            _token = await ObterTokenAsync(ct);
-            request.Headers.Authorization =
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
-            response = await base.SendAsync(request, ct);
-        }
+        // Token expirado: invalida cache para que a próxima requisição obtenha um novo token.
+        // HttpRequestMessage não é reenviável após consumo — o caller deve retentar se necessário.
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+            _token = null;
 
         return response;
+    }
+
+    private async Task RefreshTokenAsync(CancellationToken ct)
+    {
+        await _lock.WaitAsync(ct);
+        try
+        {
+            if (!string.IsNullOrEmpty(_token)) return; // double-check dentro do lock
+            _token = await ObterTokenAsync(ct);
+        }
+        finally
+        {
+            _lock.Release();
+        }
     }
 
     private async Task<string> ObterTokenAsync(CancellationToken ct)
