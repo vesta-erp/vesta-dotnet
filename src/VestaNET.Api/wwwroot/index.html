@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Vesta — Apoio à Decisão</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:#111827;color:#e8edf3}
+.layout{display:flex;height:100vh}
+.side{width:210px;background:#0d1420;padding:20px 14px;display:flex;flex-direction:column;border-right:1px solid #1e2d45;flex-shrink:0}
+.main{flex:1;overflow-y:auto;padding:24px}
+.logo{font-size:20px;font-weight:700;letter-spacing:5px;color:#fff;margin-bottom:3px}
+.logo-s{font-size:10px;color:#3b5070;letter-spacing:2px;margin-bottom:28px}
+.n{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:7px;font-size:13px;color:#6b7f96;cursor:pointer;margin-bottom:3px}
+.n:hover,.n.a{background:#1a2a3d;color:#e8edf3}
+.n i{font-size:15px}
+.nb{margin-top:auto}
+.hbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.hbar h1{font-size:17px;font-weight:500;letter-spacing:1px;color:#e8edf3}
+.bdg{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
+.bok{background:#0a2a1c;color:#34d399}
+.ber{background:#2d1010;color:#f87171}
+.bof{background:#1a2236;color:#3b5070}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.st{background:#0d1420;border-radius:9px;padding:14px;border:1px solid #1e2d45}
+.st-l{font-size:10px;color:#3b5070;letter-spacing:1px;margin-bottom:5px;text-transform:uppercase}
+.st-v{font-size:22px;font-weight:600}
+.red{color:#f87171}.amb{color:#fbbf24}.grn{color:#34d399}.blu{color:#60a5fa}
+.box{background:#0d1420;border-radius:9px;padding:18px;border:1px solid #1e2d45;margin-bottom:16px}
+.bt{font-size:10px;color:#3b5070;letter-spacing:1.5px;margin-bottom:12px;text-transform:uppercase}
+.row{display:flex;gap:8px;margin-bottom:8px}
+input,select{flex:1;background:#111827;border:1px solid #1e2d45;border-radius:6px;padding:8px 11px;color:#e8edf3;font-size:13px;outline:none}
+input:focus,select:focus{border-color:#2d5a8e}
+button{background:#1a3a5c;border:none;border-radius:6px;padding:8px 14px;color:#7eb8f5;font-size:13px;cursor:pointer;font-weight:500;white-space:nowrap}
+button:hover{background:#1e4870}
+button.g{background:#0a2a1a;color:#34d399}button.g:hover{background:#0f3522}
+button.s{padding:5px 11px;font-size:12px}
+.cards{display:flex;flex-direction:column;gap:7px}
+.card{background:#0d1420;border-radius:9px;padding:13px 15px;border:1px solid #1e2d45;display:flex;align-items:center;gap:11px;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:#2d5a8e}
+.cn{font-size:14px;font-weight:500;color:#e8edf3;margin-bottom:2px}
+.cm{font-size:12px;color:#3b5070}
+.nv{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.Critica,.CRITICA{background:#2d1010;color:#f87171}
+.Alta,.ALTA{background:#2d1f08;color:#fbbf24}
+.Media,.MEDIA{background:#0f2010;color:#86efac}
+.Baixa,.BAIXA{background:#0a1628;color:#60a5fa}
+.ATIVO{background:#0a2014;color:#34d399}
+.LOTADO{background:#2d1010;color:#f87171}
+.INTERDITADO{background:#2d1f08;color:#fbbf24}
+.INATIVO{background:#1a1a1a;color:#6b7f96}
+.bw{flex:1;background:#111827;border-radius:3px;height:5px;overflow:hidden;min-width:50px}
+.bf{height:5px;border-radius:3px}
+.rr{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:9px;background:#0d1420;border:1px solid #1e2d45;margin-bottom:5px}
+.pos{font-size:19px;font-weight:700;min-width:30px;color:#1a2a3d}
+.p1{color:#fbbf24}.p2{color:#9ca3af}.p3{color:#c87c3a}
+.rb{background:#0d1420;border-radius:9px;padding:18px;border:1px solid #1e2d45;margin-top:14px}
+.ji{font-size:13px;color:#6b7f96;padding:5px 0;border-bottom:1px solid #1a2a3d;display:flex;align-items:flex-start;gap:7px}
+.ji:last-child{border-bottom:none}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;background:#fbbf24}
+.ri{font-size:13px;padding:7px 10px;border-radius:6px;margin-bottom:3px;background:#111827;color:#b8ccd8;display:flex;align-items:flex-start;gap:7px}
+.tag{font-size:10px;padding:2px 7px;border-radius:10px;background:#1a3a5c;color:#7eb8f5;font-weight:600;white-space:nowrap;flex-shrink:0}
+.empty{color:#3b5070;font-size:13px;text-align:center;padding:36px}
+.tab{display:none}.tab.on{display:block}
+select option{background:#111827}
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="side">
+  <div class="logo">VESTA</div>
+  <div class="logo-s">APOIO À DECISÃO</div>
+  <div class="n a" onclick="go('dash')"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+  <div class="n" onclick="go('abrigos')"><i class="ti ti-building-community"></i> Abrigos</div>
+  <div class="n" onclick="go('rank')"><i class="ti ti-chart-bar"></i> Ranking</div>
+  <div class="n" onclick="go('analise')"><i class="ti ti-brain"></i> Análise</div>
+  <div class="nb"><div class="n" id="snav"><i class="ti ti-circle"></i> <span id="stxt">desconectado</span></div></div>
+</div>
+<div class="main">
+
+<div id="tab-dash" class="tab on">
+  <div class="hbar"><h1>DASHBOARD</h1><span class="bdg bof" id="apib">API offline</span></div>
+  <div class="box">
+    <div class="bt">Conectar à API</div>
+    <div class="row"><input id="iurl" value="http://localhost:5050" placeholder="URL da API"/></div>
+    <div class="row">
+      <select id="irole"><option value="GESTOR">GESTOR</option><option value="ADMIN">ADMIN</option><option value="OPERADOR">OPERADOR</option></select>
+      <button onclick="conectar()"><i class="ti ti-plug"></i> Conectar</button>
+    </div>
+    <div id="tok" style="display:none;font-size:11px;color:#34d399;margin-top:8px;font-family:monospace;word-break:break-all"></div>
+  </div>
+  <div class="grid4">
+    <div class="st"><div class="st-l">Total de abrigos</div><div class="st-v" id="s1">—</div></div>
+    <div class="st"><div class="st-l">Com ocorrências</div><div class="st-v red" id="s2">—</div></div>
+    <div class="st"><div class="st-l">Lotados</div><div class="st-v amb" id="s3">—</div></div>
+    <div class="st"><div class="st-l">Estáveis</div><div class="st-v grn" id="s4">—</div></div>
+  </div>
+  <div style="font-size:10px;color:#3b5070;letter-spacing:1.5px;margin-bottom:12px;text-transform:uppercase">Mais críticos agora</div>
+  <div class="cards" id="dlist"><div class="empty">Conecte à API para carregar os dados</div></div>
+</div>
+
+<div id="tab-abrigos" class="tab">
+  <div class="hbar"><h1>ABRIGOS</h1><button class="s" onclick="loadAb()"><i class="ti ti-refresh"></i> Atualizar</button></div>
+  <div class="cards" id="alist"><div class="empty">Conecte à API primeiro</div></div>
+</div>
+
+<div id="tab-rank" class="tab">
+  <div class="hbar"><h1>RANKING DE CRITICIDADE</h1><button class="s" onclick="loadRk()"><i class="ti ti-refresh"></i> Atualizar</button></div>
+  <div id="rlist"><div class="empty">Conecte à API primeiro</div></div>
+</div>
+
+<div id="tab-analise" class="tab">
+  <div class="hbar"><h1>ANÁLISE DE CRITICIDADE</h1></div>
+  <div class="box">
+    <div class="bt">Executar análise</div>
+    <div class="row">
+      <input id="iid" placeholder="ID do abrigo" type="number" style="max-width:170px"/>
+      <button class="g" onclick="exec()"><i class="ti ti-brain"></i> Analisar</button>
+      <button class="s" onclick="hist()"><i class="ti ti-history"></i> Histórico</button>
+    </div>
+  </div>
+  <div id="ares"></div>
+</div>
+
+</div>
+</div>
+<script>
+var API='http://localhost:5050',T='';
+function go(t){
+  document.querySelectorAll('.tab').forEach(function(e){e.classList.remove('on')});
+  document.getElementById('tab-'+t).classList.add('on');
+  document.querySelectorAll('.n').forEach(function(e){
+    e.classList.toggle('a',e.getAttribute('onclick')==="go('"+t+"')");
+  });
+  if(t==='abrigos'&&T)loadAb();
+  if(t==='rank'&&T)loadRk();
+}
+async function conectar(){
+  API=document.getElementById('iurl').value.replace(/\/$/,'');
+  var role=document.getElementById('irole').value;
+  try{
+    var r=await fetch(API+'/api/auth/token',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({userId:'1',email:'gestor@vesta.gov.br',role:role})});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    var d=await r.json();T=d.token;
+    document.getElementById('apib').textContent='API online';
+    document.getElementById('apib').className='bdg bok';
+    document.getElementById('stxt').textContent='conectado';
+    document.getElementById('tok').style.display='block';
+    document.getElementById('tok').textContent='Token ativo: '+T.substring(0,55)+'...';
+    await loadDash();
+  }catch(e){
+    document.getElementById('apib').textContent='Erro: '+e.message;
+    document.getElementById('apib').className='bdg ber';
+  }
+}
+async function req(path,opts){
+  var r=await fetch(API+path,Object.assign({headers:{'Authorization':'Bearer '+T,'Content-Type':'application/json'}},opts||{}));
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return r.json();
+}
+function cor(s){return s>=75?'#f87171':s>=50?'#fbbf24':s>=25?'#86efac':'#60a5fa'}
+async function loadDash(){
+  try{
+    var ab=await req('/api/abrigos');
+    document.getElementById('s1').textContent=ab.length;
+    document.getElementById('s2').textContent=ab.filter(function(a){return a.ocorrenciasAbertas>0}).length;
+    document.getElementById('s3').textContent=ab.filter(function(a){return a.status==='LOTADO'}).length;
+    document.getElementById('s4').textContent=ab.filter(function(a){return a.status==='ATIVO'&&a.taxaOcupacao<0.7}).length;
+    var rk=await req('/api/analises/ranking');
+    document.getElementById('dlist').innerHTML=rk.slice(0,6).map(function(x){
+      return '<div class="card" onclick="irA('+x.abrigoId+')">'
+        +'<div style="flex:1"><div class="cn">'+x.nome+'</div>'
+        +'<div class="cm">Ocupação '+Math.round(x.taxaOcupacao*100)+'% &nbsp;·&nbsp; Score '+x.score.toFixed(1)+'</div></div>'
+        +'<div class="bw"><div class="bf" style="width:'+Math.min(100,x.score)+'%;background:'+cor(x.score)+'"></div></div>'
+        +'<span class="nv '+x.nivel+'">'+x.nivel+'</span></div>';
+    }).join('')||'<div class="empty">Nenhum dado</div>';
+  }catch(e){document.getElementById('dlist').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
+}
+async function loadAb(){
+  document.getElementById('alist').innerHTML='<div class="empty">Carregando...</div>';
+  try{
+    var ab=await req('/api/abrigos');
+    document.getElementById('alist').innerHTML=ab.map(function(a){
+      return '<div class="card" onclick="irA('+a.id+')">'
+        +'<div style="flex:1"><div class="cn">'+a.nome+'</div>'
+        +'<div class="cm">Cap. '+a.capacidadeMaxima+' &nbsp;·&nbsp; Ocup. '+a.ocupacaoAtual+' ('+Math.round(a.taxaOcupacao*100)+'%)'
+        +' &nbsp;·&nbsp; Rec. críticos: '+a.recursosAbaixoMinimo+' &nbsp;·&nbsp; Ocorrências: '+a.ocorrenciasAbertas+'</div></div>'
+        +'<span class="nv '+a.status+'">'+a.status+'</span></div>';
+    }).join('')||'<div class="empty">Nenhum abrigo encontrado</div>';
+  }catch(e){document.getElementById('alist').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
+}
+async function loadRk(){
+  document.getElementById('rlist').innerHTML='<div class="empty">Carregando...</div>';
+  try{
+    var rk=await req('/api/analises/ranking');
+    document.getElementById('rlist').innerHTML=rk.map(function(x){
+      var pc=x.posicao<=3?'p'+x.posicao:'';
+      return '<div class="rr"><div class="pos '+pc+'">#'+x.posicao+'</div>'
+        +'<div style="flex:1"><div style="font-size:14px;font-weight:500;color:#e8edf3">'+x.nome+'</div>'
+        +'<div style="font-size:12px;color:#3b5070">Ocup. '+Math.round(x.taxaOcupacao*100)+'%'
+        +' &nbsp;·&nbsp; '+x.ocorrenciasAbertas+' ocorrências'
+        +' &nbsp;·&nbsp; '+x.solicitacoesPendentes+' pendentes</div></div>'
+        +'<div style="font-size:22px;font-weight:700;color:'+cor(x.score)+';min-width:54px;text-align:right">'+x.score.toFixed(1)+'</div>'
+        +'<span class="nv '+x.nivel+'" style="margin-left:10px">'+x.nivel+'</span></div>';
+    }).join('')||'<div class="empty">Nenhum dado</div>';
+  }catch(e){document.getElementById('rlist').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
+}
+function irA(id){document.getElementById('iid').value=id;go('analise');}
+function renderA(r){
+  var jh=r.justificativas.map(function(j){return '<div class="ji"><div class="dot"></div><span>'+j+'</span></div>';}).join('');
+  var rh=r.recomendacoes.map(function(x){return '<div class="ri"><span class="tag">'+x.tipo+'</span>'+x.descricao+'</div>';}).join('');
+  document.getElementById('ares').innerHTML='<div class="rb">'
+    +'<div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">'
+    +'<div style="font-size:52px;font-weight:700;color:'+cor(r.score)+'">'+r.score.toFixed(1)+'</div>'
+    +'<div><span class="nv '+r.nivel+'" style="font-size:13px">'+r.nivel+'</span>'
+    +'<div style="font-size:13px;color:#3b5070;margin-top:5px">'+r.nomeAbrigo+'</div>'
+    +'<div style="font-size:11px;color:#3b5070">'+new Date(r.dataAnalise).toLocaleString('pt-BR')+'</div></div></div>'
+    +'<div style="font-size:10px;color:#3b5070;letter-spacing:1.5px;margin-bottom:10px;text-transform:uppercase">Justificativas</div>'
+    +'<div style="margin-bottom:16px">'+jh+'</div>'
+    +'<div style="font-size:10px;color:#3b5070;letter-spacing:1.5px;margin-bottom:10px;text-transform:uppercase">Recomendações</div>'
+    +'<div>'+rh+'</div></div>';
+}
+async function exec(){
+  var id=document.getElementById('iid').value;
+  if(!id){alert('Informe o ID do abrigo');return;}
+  document.getElementById('ares').innerHTML='<div class="empty">Analisando...</div>';
+  try{renderA(await req('/api/analises/abrigos/'+id,{method:'POST'}));}
+  catch(e){document.getElementById('ares').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
+}
+async function hist(){
+  var id=document.getElementById('iid').value;
+  if(!id){alert('Informe o ID do abrigo');return;}
+  document.getElementById('ares').innerHTML='<div class="empty">Carregando...</div>';
+  try{
+    var list=await req('/api/analises/abrigos/'+id+'/historico');
+    if(!list.length){document.getElementById('ares').innerHTML='<div class="empty">Nenhuma análise registrada</div>';return;}
+    var html=list.map(function(r){
+      var rh=r.recomendacoes.map(function(x){return '<div class="ri" style="margin-bottom:3px"><span class="tag">'+x.tipo+'</span>'+x.descricao+'</div>';}).join('');
+      return '<div style="padding:14px;border-bottom:1px solid #1a2a3d">'
+        +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
+        +'<div style="font-size:22px;font-weight:700;color:'+cor(r.score)+'">'+r.score.toFixed(1)+'</div>'
+        +'<span class="nv '+r.nivel+'">'+r.nivel+'</span>'
+        +'<div style="font-size:11px;color:#3b5070;margin-left:auto">'+new Date(r.dataAnalise).toLocaleString('pt-BR')+'</div>'
+        +'</div>'+rh+'</div>';
+    }).join('');
+    document.getElementById('ares').innerHTML='<div class="rb"><div style="font-size:10px;color:#3b5070;letter-spacing:1.5px;margin-bottom:12px;text-transform:uppercase">Histórico de análises</div>'+html+'</div>';
+  }catch(e){document.getElementById('ares').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
+}
+</script>
+</body>
+</html>
