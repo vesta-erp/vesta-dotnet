@@ -4,8 +4,6 @@ using VestaNET.Application.Settings;
 
 namespace VestaNET.Infrastructure.HttpClients;
 
-// TODO: Remove these inline stubs once Task 4 (JavaApiResponseDtos.cs) is merged.
-// Duplicated from JavaApiResponseDtos.cs — will merge when Task 4 completes.
 internal record JavaLoginRequest(string Email, string Senha);
 internal record JavaLoginResponse(string Token, string Tipo);
 
