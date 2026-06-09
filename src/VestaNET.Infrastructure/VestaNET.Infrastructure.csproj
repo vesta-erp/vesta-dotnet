@@ -22,4 +22,7 @@
     <ProjectReference Include="..\VestaNET.Application\VestaNET.Application.csproj" />
     <ProjectReference Include="..\VestaNET.Domain\VestaNET.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="VestaNET.Tests" />
+  </ItemGroup>
 </Project>

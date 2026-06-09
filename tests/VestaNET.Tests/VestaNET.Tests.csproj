@@ -16,5 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\VestaNET.Domain\VestaNET.Domain.csproj" />
     <ProjectReference Include="..\..\src\VestaNET.Application\VestaNET.Application.csproj" />
+    <ProjectReference Include="..\..\src\VestaNET.Infrastructure\VestaNET.Infrastructure.csproj" />
   </ItemGroup>
 </Project>
