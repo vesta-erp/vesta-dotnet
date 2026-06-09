@@ -32,24 +32,33 @@ public class JavaApiClient(HttpClient http) : IJavaApiClient
 
         var tarefas = abrigosBasicos.Select(a => ObterComDetalhesAsync(a.IdAbrigo, ct));
         var resultados = await Task.WhenAll(tarefas);
-        return resultados.Where(a => a != null).Cast<Abrigo>().ToList();
+        return resultados.OfType<Abrigo>().ToList();
     }
 
     private async Task<List<JavaEstoqueResponse>> ObterEstoquesAsync(long id, CancellationToken ct)
     {
-        var resp = await http.GetFromJsonAsync<JavaEstoqueHateoas>($"api/abrigos/{id}/estoque", ct);
-        return resp?.Embedded?.Items ?? [];
+        var resp = await http.GetAsync($"api/abrigos/{id}/estoque", ct);
+        if (resp.StatusCode == HttpStatusCode.NotFound) return [];
+        resp.EnsureSuccessStatusCode();
+        var hateoas = await resp.Content.ReadFromJsonAsync<JavaEstoqueHateoas>(ct);
+        return hateoas?.Embedded?.Items ?? [];
     }
 
     private async Task<List<JavaOcorrenciaResponse>> ObterOcorrenciasAsync(long id, CancellationToken ct)
     {
-        var resp = await http.GetFromJsonAsync<JavaOcorrenciaHateoas>($"api/abrigos/{id}/ocorrencias", ct);
-        return resp?.Embedded?.Items ?? [];
+        var resp = await http.GetAsync($"api/abrigos/{id}/ocorrencias", ct);
+        if (resp.StatusCode == HttpStatusCode.NotFound) return [];
+        resp.EnsureSuccessStatusCode();
+        var hateoas = await resp.Content.ReadFromJsonAsync<JavaOcorrenciaHateoas>(ct);
+        return hateoas?.Embedded?.Items ?? [];
     }
 
     private async Task<List<JavaSolicitacaoResponse>> ObterSolicitacoesAsync(long id, CancellationToken ct)
     {
-        var resp = await http.GetFromJsonAsync<JavaSolicitacaoHateoas>($"api/abrigos/{id}/solicitacoes", ct);
-        return resp?.Embedded?.Items ?? [];
+        var resp = await http.GetAsync($"api/abrigos/{id}/solicitacoes", ct);
+        if (resp.StatusCode == HttpStatusCode.NotFound) return [];
+        resp.EnsureSuccessStatusCode();
+        var hateoas = await resp.Content.ReadFromJsonAsync<JavaSolicitacaoHateoas>(ct);
+        return hateoas?.Embedded?.Items ?? [];
     }
 }
