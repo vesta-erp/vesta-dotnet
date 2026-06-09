@@ -269,7 +269,7 @@ async function hist(){
   }catch(e){document.getElementById('ares').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
 }
 
-window.addEventListener('load', function(){ conectar(); });
+document.addEventListener('DOMContentLoaded', function(){ conectar(); });
 </script>
 </body>
 </html>
