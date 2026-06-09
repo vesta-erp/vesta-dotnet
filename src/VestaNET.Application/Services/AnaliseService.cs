@@ -82,8 +82,8 @@ public class AnaliseService
     private static CriticidadeDto ToDto(long id, ResultadoCriticidade r) =>
         new(
             id,
-            (int)Math.Round(r.Score),
-            r.Nivel.ToString().ToUpper(),
+            r.Score,
+            r.Nivel.ToString(),
             string.Join("; ", r.Justificativas),
             r.Recomendacoes.Select(rec => rec.Descricao).ToList());
 
