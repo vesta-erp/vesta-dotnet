@@ -2,6 +2,16 @@
 
 **Global Solution FIAP 2026/1 — Advanced Business Development with .NET**
 
+## Integrantes
+
+| Nome | RM |
+|---|---|
+| Gabriel Cruz Ferreira | RM559613 |
+| João Victor Madella | RM561007 |
+| Kauã Ferreira dos Santos | RM560992 |
+| Nathália Mantovani de Falco | RM99904 |
+| Vinicius da Silva Bitú | RM560227 |
+
 ---
 
 ## O que é este serviço
