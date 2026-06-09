@@ -63,6 +63,30 @@ public class AnaliseService
             .ToList();
     }
 
+    public async Task<CriticidadeDto?> CalcularAsync(long abrigoId, CancellationToken ct = default)
+    {
+        var abrigo = await _abrigos.ObterComDetalhesAsync(abrigoId, ct);
+        if (abrigo == null) return null;
+        var resultado = _calc.Calcular(abrigo);
+        return ToDto(abrigo.Id, resultado);
+    }
+
+    public async Task<List<CriticidadeDto>> CalcularTodosAsync(long? regiaoId, CancellationToken ct = default)
+    {
+        var abrigos = await _abrigos.ListarComDetalhesAsync(regiaoId, ct);
+        return abrigos
+            .Select(a => ToDto(a.Id, _calc.Calcular(a)))
+            .ToList();
+    }
+
+    private static CriticidadeDto ToDto(long id, ResultadoCriticidade r) =>
+        new(
+            id,
+            (int)Math.Round(r.Score),
+            r.Nivel.ToString().ToUpper(),
+            string.Join("; ", r.Justificativas),
+            r.Recomendacoes.Select(rec => rec.Descricao).ToList());
+
     private static AnaliseDto ToDto(AnaliseCriticidade a, string nomeAbrigo, ResultadoCriticidade r) => new(
         a.Id,
         a.AbrigoId,
