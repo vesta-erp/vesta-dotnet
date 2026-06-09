@@ -23,6 +23,7 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,sans-serif;background:#11
 .bok{background:#0a2a1c;color:#34d399}
 .ber{background:#2d1010;color:#f87171}
 .bof{background:#1a2236;color:#3b5070}
+.bld{background:#1a2a3d;color:#7eb8f5}
 .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
 .st{background:#0d1420;border-radius:9px;padding:14px;border:1px solid #1e2d45}
 .st-l{font-size:10px;color:#3b5070;letter-spacing:1px;margin-bottom:5px;text-transform:uppercase}
@@ -63,6 +64,7 @@ button.s{padding:5px 11px;font-size:12px}
 .ri{font-size:13px;padding:7px 10px;border-radius:6px;margin-bottom:3px;background:#111827;color:#b8ccd8;display:flex;align-items:flex-start;gap:7px}
 .tag{font-size:10px;padding:2px 7px;border-radius:10px;background:#1a3a5c;color:#7eb8f5;font-weight:600;white-space:nowrap;flex-shrink:0}
 .empty{color:#3b5070;font-size:13px;text-align:center;padding:36px}
+.loading{color:#7eb8f5;font-size:13px;text-align:center;padding:36px}
 .tab{display:none}.tab.on{display:block}
 select option{background:#111827}
 </style>
@@ -76,18 +78,18 @@ select option{background:#111827}
   <div class="n" onclick="go('abrigos')"><i class="ti ti-building-community"></i> Abrigos</div>
   <div class="n" onclick="go('rank')"><i class="ti ti-chart-bar"></i> Ranking</div>
   <div class="n" onclick="go('analise')"><i class="ti ti-brain"></i> Análise</div>
-  <div class="nb"><div class="n" id="snav"><i class="ti ti-circle"></i> <span id="stxt">desconectado</span></div></div>
+  <div class="nb"><div class="n" id="snav"><i class="ti ti-circle"></i> <span id="stxt">conectando...</span></div></div>
 </div>
 <div class="main">
 
 <div id="tab-dash" class="tab on">
-  <div class="hbar"><h1>DASHBOARD</h1><span class="bdg bof" id="apib">API offline</span></div>
-  <div class="box">
-    <div class="bt">Conectar à API</div>
-    <div class="row"><input id="iurl" value="http://localhost:5050" placeholder="URL da API"/></div>
+  <div class="hbar"><h1>DASHBOARD</h1><span class="bdg bld" id="apib">Conectando...</span></div>
+  <div class="box" id="conn-box">
+    <div class="bt">Conexão com a API</div>
+    <div class="row"><input id="iurl" placeholder="URL da API" readonly/></div>
     <div class="row">
       <select id="irole"><option value="GESTOR">GESTOR</option><option value="ADMIN">ADMIN</option><option value="OPERADOR">OPERADOR</option></select>
-      <button onclick="conectar()"><i class="ti ti-plug"></i> Conectar</button>
+      <button onclick="conectar()"><i class="ti ti-plug"></i> Reconectar</button>
     </div>
     <div id="tok" style="display:none;font-size:11px;color:#34d399;margin-top:8px;font-family:monospace;word-break:break-all"></div>
   </div>
@@ -98,17 +100,17 @@ select option{background:#111827}
     <div class="st"><div class="st-l">Estáveis</div><div class="st-v grn" id="s4">—</div></div>
   </div>
   <div style="font-size:10px;color:#3b5070;letter-spacing:1.5px;margin-bottom:12px;text-transform:uppercase">Mais críticos agora</div>
-  <div class="cards" id="dlist"><div class="empty">Conecte à API para carregar os dados</div></div>
+  <div class="cards" id="dlist"><div class="loading">Conectando à API...</div></div>
 </div>
 
 <div id="tab-abrigos" class="tab">
   <div class="hbar"><h1>ABRIGOS</h1><button class="s" onclick="loadAb()"><i class="ti ti-refresh"></i> Atualizar</button></div>
-  <div class="cards" id="alist"><div class="empty">Conecte à API primeiro</div></div>
+  <div class="cards" id="alist"><div class="empty">Carregando...</div></div>
 </div>
 
 <div id="tab-rank" class="tab">
   <div class="hbar"><h1>RANKING DE CRITICIDADE</h1><button class="s" onclick="loadRk()"><i class="ti ti-refresh"></i> Atualizar</button></div>
-  <div id="rlist"><div class="empty">Conecte à API primeiro</div></div>
+  <div id="rlist"><div class="empty">Carregando...</div></div>
 </div>
 
 <div id="tab-analise" class="tab">
@@ -127,7 +129,10 @@ select option{background:#111827}
 </div>
 </div>
 <script>
-var API='http://localhost:5050',T='';
+var API = window.location.origin;
+var T = '';
+document.getElementById('iurl').value = API;
+
 function go(t){
   document.querySelectorAll('.tab').forEach(function(e){e.classList.remove('on')});
   document.getElementById('tab-'+t).classList.add('on');
@@ -137,40 +142,48 @@ function go(t){
   if(t==='abrigos'&&T)loadAb();
   if(t==='rank'&&T)loadRk();
 }
+
 async function conectar(){
-  API=document.getElementById('iurl').value.replace(/\/$/,'');
-  var role=document.getElementById('irole').value;
+  API = document.getElementById('iurl').value.replace(/\/$/,'');
+  var role = document.getElementById('irole').value;
   try{
-    var r=await fetch(API+'/api/auth/token',{method:'POST',headers:{'Content-Type':'application/json'},
+    document.getElementById('apib').textContent = 'Conectando...';
+    document.getElementById('apib').className = 'bdg bld';
+    var r = await fetch(API+'/api/auth/token',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({userId:'1',email:'gestor@vesta.gov.br',role:role})});
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    var d=await r.json();T=d.token;
-    document.getElementById('apib').textContent='API online';
-    document.getElementById('apib').className='bdg bok';
-    document.getElementById('stxt').textContent='conectado';
-    document.getElementById('tok').style.display='block';
-    document.getElementById('tok').textContent='Token ativo: '+T.substring(0,55)+'...';
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var d = await r.json(); T = d.token;
+    document.getElementById('apib').textContent = 'API online';
+    document.getElementById('apib').className = 'bdg bok';
+    document.getElementById('stxt').textContent = 'conectado';
+    document.getElementById('tok').style.display = 'block';
+    document.getElementById('tok').textContent = 'Token ativo: '+T.substring(0,55)+'...';
     await loadDash();
   }catch(e){
-    document.getElementById('apib').textContent='Erro: '+e.message;
-    document.getElementById('apib').className='bdg ber';
+    document.getElementById('apib').textContent = 'Erro: '+e.message;
+    document.getElementById('apib').className = 'bdg ber';
+    document.getElementById('stxt').textContent = 'erro';
+    document.getElementById('dlist').innerHTML = '<div class="empty">Não foi possível conectar: '+e.message+'</div>';
   }
 }
+
 async function req(path,opts){
-  var r=await fetch(API+path,Object.assign({headers:{'Authorization':'Bearer '+T,'Content-Type':'application/json'}},opts||{}));
-  if(!r.ok)throw new Error('HTTP '+r.status);
+  var r = await fetch(API+path,Object.assign({headers:{'Authorization':'Bearer '+T,'Content-Type':'application/json'}},opts||{}));
+  if(!r.ok) throw new Error('HTTP '+r.status);
   return r.json();
 }
+
 function cor(s){return s>=75?'#f87171':s>=50?'#fbbf24':s>=25?'#86efac':'#60a5fa'}
+
 async function loadDash(){
   try{
-    var ab=await req('/api/abrigos');
-    document.getElementById('s1').textContent=ab.length;
-    document.getElementById('s2').textContent=ab.filter(function(a){return a.ocorrenciasAbertas>0}).length;
-    document.getElementById('s3').textContent=ab.filter(function(a){return a.status==='LOTADO'}).length;
-    document.getElementById('s4').textContent=ab.filter(function(a){return a.status==='ATIVO'&&a.taxaOcupacao<0.7}).length;
-    var rk=await req('/api/analises/ranking');
-    document.getElementById('dlist').innerHTML=rk.slice(0,6).map(function(x){
+    var ab = await req('/api/abrigos');
+    document.getElementById('s1').textContent = ab.length;
+    document.getElementById('s2').textContent = ab.filter(function(a){return a.ocorrenciasAbertas>0}).length;
+    document.getElementById('s3').textContent = ab.filter(function(a){return a.status==='LOTADO'}).length;
+    document.getElementById('s4').textContent = ab.filter(function(a){return a.status==='ATIVO'&&a.taxaOcupacao<0.7}).length;
+    var rk = await req('/api/analises/ranking');
+    document.getElementById('dlist').innerHTML = rk.slice(0,6).map(function(x){
       return '<div class="card" onclick="irA('+x.abrigoId+')">'
         +'<div style="flex:1"><div class="cn">'+x.nome+'</div>'
         +'<div class="cm">Ocupação '+Math.round(x.taxaOcupacao*100)+'% &nbsp;·&nbsp; Score '+x.score.toFixed(1)+'</div></div>'
@@ -179,11 +192,12 @@ async function loadDash(){
     }).join('')||'<div class="empty">Nenhum dado</div>';
   }catch(e){document.getElementById('dlist').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
 }
+
 async function loadAb(){
   document.getElementById('alist').innerHTML='<div class="empty">Carregando...</div>';
   try{
-    var ab=await req('/api/abrigos');
-    document.getElementById('alist').innerHTML=ab.map(function(a){
+    var ab = await req('/api/abrigos');
+    document.getElementById('alist').innerHTML = ab.map(function(a){
       return '<div class="card" onclick="irA('+a.id+')">'
         +'<div style="flex:1"><div class="cn">'+a.nome+'</div>'
         +'<div class="cm">Cap. '+a.capacidadeMaxima+' &nbsp;·&nbsp; Ocup. '+a.ocupacaoAtual+' ('+Math.round(a.taxaOcupacao*100)+'%)'
@@ -192,12 +206,13 @@ async function loadAb(){
     }).join('')||'<div class="empty">Nenhum abrigo encontrado</div>';
   }catch(e){document.getElementById('alist').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
 }
+
 async function loadRk(){
   document.getElementById('rlist').innerHTML='<div class="empty">Carregando...</div>';
   try{
-    var rk=await req('/api/analises/ranking');
-    document.getElementById('rlist').innerHTML=rk.map(function(x){
-      var pc=x.posicao<=3?'p'+x.posicao:'';
+    var rk = await req('/api/analises/ranking');
+    document.getElementById('rlist').innerHTML = rk.map(function(x){
+      var pc = x.posicao<=3?'p'+x.posicao:'';
       return '<div class="rr"><div class="pos '+pc+'">#'+x.posicao+'</div>'
         +'<div style="flex:1"><div style="font-size:14px;font-weight:500;color:#e8edf3">'+x.nome+'</div>'
         +'<div style="font-size:12px;color:#3b5070">Ocup. '+Math.round(x.taxaOcupacao*100)+'%'
@@ -208,10 +223,12 @@ async function loadRk(){
     }).join('')||'<div class="empty">Nenhum dado</div>';
   }catch(e){document.getElementById('rlist').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
 }
+
 function irA(id){document.getElementById('iid').value=id;go('analise');}
+
 function renderA(r){
-  var jh=r.justificativas.map(function(j){return '<div class="ji"><div class="dot"></div><span>'+j+'</span></div>';}).join('');
-  var rh=r.recomendacoes.map(function(x){return '<div class="ri"><span class="tag">'+x.tipo+'</span>'+x.descricao+'</div>';}).join('');
+  var jh = r.justificativas.map(function(j){return '<div class="ji"><div class="dot"></div><span>'+j+'</span></div>';}).join('');
+  var rh = r.recomendacoes.map(function(x){return '<div class="ri"><span class="tag">'+x.tipo+'</span>'+x.descricao+'</div>';}).join('');
   document.getElementById('ares').innerHTML='<div class="rb">'
     +'<div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">'
     +'<div style="font-size:52px;font-weight:700;color:'+cor(r.score)+'">'+r.score.toFixed(1)+'</div>'
@@ -223,22 +240,24 @@ function renderA(r){
     +'<div style="font-size:10px;color:#3b5070;letter-spacing:1.5px;margin-bottom:10px;text-transform:uppercase">Recomendações</div>'
     +'<div>'+rh+'</div></div>';
 }
+
 async function exec(){
-  var id=document.getElementById('iid').value;
+  var id = document.getElementById('iid').value;
   if(!id){alert('Informe o ID do abrigo');return;}
   document.getElementById('ares').innerHTML='<div class="empty">Analisando...</div>';
   try{renderA(await req('/api/analises/abrigos/'+id,{method:'POST'}));}
   catch(e){document.getElementById('ares').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
 }
+
 async function hist(){
-  var id=document.getElementById('iid').value;
+  var id = document.getElementById('iid').value;
   if(!id){alert('Informe o ID do abrigo');return;}
   document.getElementById('ares').innerHTML='<div class="empty">Carregando...</div>';
   try{
-    var list=await req('/api/analises/abrigos/'+id+'/historico');
+    var list = await req('/api/analises/abrigos/'+id+'/historico');
     if(!list.length){document.getElementById('ares').innerHTML='<div class="empty">Nenhuma análise registrada</div>';return;}
-    var html=list.map(function(r){
-      var rh=r.recomendacoes.map(function(x){return '<div class="ri" style="margin-bottom:3px"><span class="tag">'+x.tipo+'</span>'+x.descricao+'</div>';}).join('');
+    var html = list.map(function(r){
+      var rh = r.recomendacoes.map(function(x){return '<div class="ri" style="margin-bottom:3px"><span class="tag">'+x.tipo+'</span>'+x.descricao+'</div>';}).join('');
       return '<div style="padding:14px;border-bottom:1px solid #1a2a3d">'
         +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'
         +'<div style="font-size:22px;font-weight:700;color:'+cor(r.score)+'">'+r.score.toFixed(1)+'</div>'
@@ -249,6 +268,8 @@ async function hist(){
     document.getElementById('ares').innerHTML='<div class="rb"><div style="font-size:10px;color:#3b5070;letter-spacing:1.5px;margin-bottom:12px;text-transform:uppercase">Histórico de análises</div>'+html+'</div>';
   }catch(e){document.getElementById('ares').innerHTML='<div class="empty">Erro: '+e.message+'</div>';}
 }
+
+window.addEventListener('load', function(){ conectar(); });
 </script>
 </body>
 </html>
